@@ -1,0 +1,5 @@
+Barometr nimani o'lchaydi?\nA) Tezlikni o'lchaydi\nB) Bosimni o'lchaydi\nC) Hajmni o'lchaydi\nD) Uzunlikni o'lchaydi
+Zarralarning to'xtovsiz va tartibsiz harakati nima deyiladi?\nA) Avogadro qonuni\nB) Pascal qonuni\nC) Gerd qonuni\nD) Broun qonuni
+Tezlikni topish formulasi qaysi?\nA) V=S*d\nB) V=S/t\nC) V=S*t\nD) V=S/d
+Moddaning kimyoviy xossasini o'zida saqlab qoladigan eng kichik zarra bu nima?\nA) Molekula\nB) Atom\nC) Zarra\nD) To'g'ri javob yo'q
+U=Ek+Ep formula nimani topish formulasi hisoblanadi?\nA) Potensial energiya\nB) Kinetik energiya\nC) Ichki energiya\nD) Issiqlik energiyasi\n

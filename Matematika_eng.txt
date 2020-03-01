@@ -1,0 +1,5 @@
+Evaluate: 3*5+(34-15)\nA) Answer: 34\nB) Answer: 28\nC) Answer: 25\nD) Answer: 37
+What kind of numbers are natural numbers?\nA) Fractions\nB) Numbers used for counting\nC) Rational numbers\nD) All answers are correct
+What do we call common chord in two circles?\nA) Radical center\nB) Power of a point\nC) Chord\nD) Radical axis
+Which of the following statements is correct?\nA) 36<38<41.\nB) 36<72<71.\nC) 34<35<32.\nD) No correct answers.
+Calculate: 3*6+2+(4*3+1)\nA) Answer: 23\nB) Answer: 32\nC) Answer: 24\nD) Answer: 33\n
