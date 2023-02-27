@@ -1,2 +1,2 @@
 # C Quiz App
-C Programming Language mini quiz app
+Mini Test application with C Programming Language
