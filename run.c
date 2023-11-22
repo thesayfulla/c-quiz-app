@@ -1,14 +1,15 @@
 #include <stdio.h>
-
 #include <string.h>
-
 #include <stdlib.h>
- //Mirxoliqov Sayfulla
-/*Test javoblari
+
+// Mirxoliqov Sayfulla
+/*
+Test javoblari:
 Fizikaniki: 1-B, 2-D, 3-B, 4-A, 5-C.
 Matematikaniki: 1-A, 2-B, 3-D, 4-A, 5-D.
 Aralashniki: 1-A, 2-B, 3-B, 4-C, 5-C.
 */
+
 char tx[200][200][400] = {
   {
     "                      Viktorina Savollari   \n                     Indekslarda ifodalang:\n============================================================\n| 1-Fizika;\n| 2-Matematika;\n| 3-Aralash qiziqarli savollar;\n| 4-Ortga qaytish;\n============================================================\n==>>"
@@ -67,6 +68,7 @@ char ism[20], familya[20];
 int til = 0, ball = 0, tanladim = 0;
 int i, u = 1, h = 0;
 char javob[4];
+
 void Modul_A() {
   if (til == 1) {
     if (javob[h] == 'A' || javob[h] == 'a') {
@@ -91,6 +93,7 @@ void Modul_A() {
     }
   }
 }
+
 void Modul_B() {
   if (til == 1) {
     if (javob[h] == 'B' || javob[h] == 'b') {
@@ -115,6 +118,7 @@ void Modul_B() {
     }
   }
 }
+
 void Modul_C() {
   if (til == 1) {
     if (javob[h] == 'C' || javob[h] == 'c') {
@@ -139,6 +143,7 @@ void Modul_C() {
     }
   }
 }
+
 void Modul_D() {
   if (til == 1) {
     if (javob[h] == 'D' || javob[h] == 'd') {
@@ -163,6 +168,7 @@ void Modul_D() {
     }
   }
 }
+
 int name() {
   if (til == 1) {
     printf("Ismingiz: ");
@@ -185,6 +191,7 @@ int name() {
   }
   return 0;
 }
+
 int Aralash_uz_ru() {
   FILE * fp;
   if (til == 1) {
@@ -503,6 +510,7 @@ int Matematika_uz_ru() {
   }
   return 0;
 }
+
 int main(void) {
   qaytdi: printf("O'zbek tili uchun 1 ni bosing\nНажмите 2 для русского языка\nPress 3 for English\n==>> ");
   scanf("%d", & til);
