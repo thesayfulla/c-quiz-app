@@ -1,8 +1,9 @@
 # C Quiz App
-Mini Test application with C Programming Language
 
-### Setup:
+A simple quiz application built using the C programming language.
+
+### How to Run
 ```sh
-$ gcc run.c -o run
-$ ./run
+gcc run.c -o run
+./run
 ```
