@@ -2,580 +2,235 @@
 #include <string.h>
 #include <stdlib.h>
 
-// Mirxoliqov Sayfulla
 /*
-Test javoblari:
-Fizikaniki: 1-B, 2-D, 3-B, 4-A, 5-C.
-Matematikaniki: 1-A, 2-B, 3-D, 4-A, 5-D.
-Aralashniki: 1-A, 2-B, 3-B, 4-C, 5-C.
+Answers:
+Physics: 1-B, 2-D, 3-B, 4-A, 5-C.
+Math: 1-A, 2-B, 3-D, 4-A, 5-D.
+Mixed: 1-A, 2-B, 3-B, 4-C, 5-C.
 */
 
-char tx[200][200][400] = {
-  {
-    "                      Viktorina Savollari   \n                     Indekslarda ifodalang:\n============================================================\n| 1-Fizika;\n| 2-Matematika;\n| 3-Aralash qiziqarli savollar;\n| 4-Ortga qaytish;\n============================================================\n==>>"
-  },
-  {
-    "                      Тестовые вопросы   \n                     Укажите в индексах:\n============================================================\n| 1-Физика;\n| 2-Математика;\n| 3-Интересные вопросы;\n| 4-Вернуться назад\n============================================================\n==>>"
-  },
-  {
-    "                      Test Questions   \n                     Express in indexes:\n============================================================\n| 1-Physics;\n| 2-Mathematics;\n| 3-Interesting questions;\n| 4-Go back;\n============================================================\n==>>"
-  }
+#define UZBEK 1
+#define RUSSIAN 2
+#define ENGLISH 3
+
+#define PHYSICS 1
+#define MATHEMATICS 2
+#define MIXED 3
+#define GO_BACK 4
+
+typedef struct
+{
+  char name[50];
+  char surname[50];
+  int language;
+  int score;
+} User;
+
+User user = {0};
+
+const char *welcome_messages[3] = {
+    "==========================================================\n\t\t\tHUSH KELIBSIZ!!!\n==========================================================",
+    "==========================================================\n\t\t\tДобро пожаловать!!!\n==========================================================",
+    "===========================================================\n\t\t\tWELCOME!!!\n==========================================================="};
+
+const char *menu_messages[3] = {
+    "\t\t\tViktorina Savollari\n\t\t\tIndekslarda ifodalang:\n============================================================\n| 1-Fizika;\n| 2-Matematika;\n| 3-Aralash qiziqarli savollar;\n| 4-Ortga qaytish;\n============================================================\n==>>",
+    "\t\t\tТестовые вопросы\n\t\t\tУкажите в индексах:\n============================================================\n| 1-Физика;\n| 2-Математика;\n| 3-Интересные вопросы;\n| 4-Вернуться назад\n============================================================\n==>>",
+    "\t\t\tTest Questions\n\t\t\tExpress in indexes:\n============================================================\n| 1-Physics;\n| 2-Mathematics;\n| 3-Interesting questions;\n| 4-Go back;\n============================================================\n==>>"};
+
+const char *subject_headers[3][3] = {
+    {"Fizika fanidan savollar:", "Matematika fanidan savollar:", "Aralash qiziqarli savollar:"},
+    {"Вопросы по физике:", "Вопросы по математике:", "Интересные вопросы:"},
+    {"Questions in physics:", "Questions in Mathematics:", "Interesting questions:"}};
+
+const char *input_prompts[3][3] = {
+    {"Ismingiz: ", "Familyangiz: ", "Javob: "},
+    {"Имя: ", "Фамилия: ", "Ответ: "},
+    {"First name: ", "Last name: ", "Answer: "}};
+
+const char *question_labels[3] = {
+    "Savol", "Вопрос", "Question"};
+
+const char *correct_answers[3] = {
+    "Javob to'g'ri", "Ответ правильный", "The answer is correct."};
+
+const char *wrong_answers[3] = {
+    "Javob noto'g'ri", "Неправильный ответ", "Wrong answer"};
+
+const char *score_messages[3] = {
+    "%s %s siz %d ball yig'diz\n", "%s %s вы набрали %d очков\n", "%s %s you scored %d points\n"};
+
+const char *file_names[3][3] = {
+    {"Fizika_uz.txt", "Matematika_uz.txt", "Aralash_uz.txt"},
+    {"Fizika_ru.txt", "Matematika_ru.txt", "Aralash_ru.txt"},
+    {"Fizika_eng.txt", "Matematika_eng.txt", "Aralash_eng.txt"}};
+
+const char correct_answer_keys[3][5] = {
+    {'B', 'D', 'B', 'A', 'C'}, // Physics
+    {'A', 'B', 'D', 'A', 'D'}, // Mathematics
+    {'A', 'B', 'B', 'C', 'C'}  // Mixed
 };
-char sh[3][3][200] = {
-  {
-    "==========================================================\n                       HUSH KELIBSIZ!!!                   \n=========================================================="
-  },
-  {
-    "==========================================================\n                       Добро пожаловать!!!                  \n=========================================================="
-  },
-  {
-    "===========================================================\n                       WELCOME!!!                  \n==========================================================="
-  }
-};
-char ara_uz_ru[9][60] = {
-  {
-    "Aralash qiziqarli savollar:\n"
-  },
-  {
-    "Интересные вопросы:"
-  },
-  {
-    "Fizika fanidan savollar:\n"
-  },
-  {
-    "Вопросы по физике:\n"
-  },
-  {
-    "Matematika fanidan savollar:\n"
-  },
-  {
-    "Вопросы по математике:\n"
-  },
-  {
-    "Questions in physics:"
-  },
-  {
-    "Questions in Mathematics:\n"
-  },
-  {
-    "Interesting questions:"
-  }
-};
-char chiziq[60] = {
-  "-----------------------------------------------------------\n"
-};
-char ism[20], familya[20];
-int til = 0, ball = 0, tanladim = 0;
-int i, u = 1, h = 0;
-char javob[4];
 
-void Modul_A() {
-  if (til == 1) {
-    if (javob[h] == 'A' || javob[h] == 'a') {
-      printf("Javob to'g'ri\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Javob noto'g'ri\n\n");
-    }
-  } else if (til == 2) {
-    if (javob[h] == 'A' || javob[h] == 'a') {
-      printf("Ответ правильный\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Неправильный ответ\n\n");
-    }
-  } else if (til == 3) {
-    if (javob[h] == 'A' || javob[h] == 'a') {
-      printf("The answer is correct.\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Wrong answer\n\n");
-    }
-  }
-}
+int select_language(void);
+void display_welcome(void);
+void get_user_info(void);
+int display_menu(void);
+void display_subject_header(int subject);
+int run_quiz(int subject);
+void check_answer(char user_answer, char correct_answer);
+void display_final_score(void);
+void process_question_file(const char *filename, int subject);
 
-void Modul_B() {
-  if (til == 1) {
-    if (javob[h] == 'B' || javob[h] == 'b') {
-      printf("Javob to'g'ri\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Javob noto'g'ri\n\n");
-    }
-  } else if (til == 2) {
-    if (javob[h] == 'B' || javob[h] == 'b') {
-      printf("Ответ правильный\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Неправильный ответ\n\n");
-    }
-  } else if (til == 3) {
-    if (javob[h] == 'B' || javob[h] == 'b') {
-      printf("The answer is correct.\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Wrong answer\n\n");
-    }
-  }
-}
+int main()
+{
+  int choice;
 
-void Modul_C() {
-  if (til == 1) {
-    if (javob[h] == 'C' || javob[h] == 'c') {
-      printf("Javob to'g'ri\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Javob noto'g'ri\n\n");
-    }
-  } else if (til == 2) {
-    if (javob[h] == 'C' || javob[h] == 'c') {
-      printf("Ответ правильный\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Неправильный ответ\n\n");
-    }
-  } else if (til == 3) {
-    if (javob[h] == 'C' || javob[h] == 'c') {
-      printf("The answer is correct.\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Wrong answer\n\n");
-    }
-  }
-}
+  while (1)
+  {
+    user.language = select_language();
 
-void Modul_D() {
-  if (til == 1) {
-    if (javob[h] == 'D' || javob[h] == 'd') {
-      printf("Javob to'g'ri\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Javob noto'g'ri\n\n");
-    }
-  } else if (til == 2) {
-    if (javob[h] == 'D' || javob[h] == 'd') {
-      printf("Ответ правильный\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Неправильный ответ\n\n");
-    }
-  } else if (til == 3) {
-    if (javob[h] == 'D' || javob[h] == 'd') {
-      printf("The answer is correct.\n\n");
-      ball = ball + 20;
-    } else {
-      printf("Wrong answer\n\n");
-    }
-  }
-}
+    display_welcome();
+    get_user_info();
 
-int name() {
-  if (til == 1) {
-    printf("Ismingiz: ");
-    scanf("%s", ism);
-    printf("Familyangiz: ");
-    scanf("%s", familya);
-    printf("\n\n");
-  } else if (til == 2) {
-    printf("Имя: ");
-    scanf("%s", ism);
-    printf("Фамилия: ");
-    scanf("%s", familya);
-    printf("\n\n");
-  } else if (til == 3) {
-    printf("First name: ");
-    scanf("%s", ism);
-    printf("Last name: ");
-    scanf("%s", familya);
-    printf("\n\n");
+    choice = display_menu();
+
+    if (choice == GO_BACK)
+    {
+      continue;
+    }
+    else if (choice >= PHYSICS && choice <= MIXED)
+    {
+      display_subject_header(choice);
+      run_quiz(choice);
+      display_final_score();
+      break;
+    }
+    else
+    {
+      break;
+    }
   }
   return 0;
 }
 
-int Aralash_uz_ru() {
-  FILE * fp;
-  if (til == 1) {
-    fp = fopen("Aralash_uz.txt", "r");
-    char ch[256];
-    while (fgets(ch, 256, fp) != NULL) {
-      printf("%d-Savol: \n", u);
-      u++;
-      int len = strlen(ch);
-      for (i = 0; i < len; i++) {
-        if (ch[i] == '\\') {
-          i++;
-          if (ch[i] == 'n') {
-            printf("\n");
-            continue;
-          }
-        }
-        printf("%c", ch[i]);
-      }
-      printf("Javob: ");
-      scanf("%s", & javob[h]);
-      if (h == 0) {
-        Modul_A();
-      } else if (h == 1) {
-        Modul_B();
-      } else if (h == 2) {
-        Modul_B();
-      } else if (h == 3) {
-        Modul_C();
-      } else if (h == 4) {
-        Modul_C();
-      }
-      h++;
-    }
-    fclose(fp);
-  } else if (til == 2) {
-    fp = fopen("Aralash_ru.txt", "r");
-    char ch[350];
-    while (fgets(ch, 350, fp) != NULL) {
-      printf("%d-Вопрос: \n", u);
-      u++;
-      int len = strlen(ch);
-      for (i = 0; i < len; i++) {
-        if (ch[i] == '\\') {
-          i++;
-          if (ch[i] == 'n') {
-            printf("\n");
-            continue;
-          }
-        }
-        printf("%c", ch[i]);
-      }
-      printf("Ответ: ");
-      scanf("%s", & javob[h]);
-      if (h == 0) {
-        Modul_A();
-      } else if (h == 1) {
-        Modul_B();
-      } else if (h == 2) {
-        Modul_B();
-      } else if (h == 3) {
-        Modul_C();
-      } else if (h == 4) {
-        Modul_C();
-      }
-      h++;
-    }
-    fclose(fp);
-  } else if (til == 3) {
-    fp = fopen("Aralash_eng.txt", "r");
-    char ch[350];
-    while (fgets(ch, 350, fp) != NULL) {
-      printf("%d-Question: \n", u);
-      u++;
-      int len = strlen(ch);
-      for (i = 0; i < len; i++) {
-        if (ch[i] == '\\') {
-          i++;
-          if (ch[i] == 'n') {
-            printf("\n");
-            continue;
-          }
-        }
-        printf("%c", ch[i]);
-      }
-      printf("Answer: ");
-      scanf("%s", & javob[h]);
-      if (h == 0) {
-        Modul_A();
-      } else if (h == 1) {
-        Modul_B();
-      } else if (h == 2) {
-        Modul_B();
-      } else if (h == 3) {
-        Modul_C();
-      } else if (h == 4) {
-        Modul_C();
-      }
-      h++;
-    }
-    fclose(fp);
-  } else {
-    return 0;
+int select_language(void)
+{
+  int lang;
+  printf("O'zbek tili uchun 1 ni bosing\n");
+  printf("Нажмите 2 для русского языка\n");
+  printf("Press 3 for English\n");
+  printf("==>> ");
+  scanf("%d", &lang);
+
+  if (lang < UZBEK || lang > ENGLISH)
+  {
+    lang = UZBEK;
   }
-  return 0;
+
+  return lang;
 }
-int Fizika_uz_ru() {
-  FILE * fp;
-  if (til == 1) {
-    fp = fopen("Fizika_uz.txt", "r");
-    char ch[256];
-    while (fgets(ch, 256, fp) != NULL) {
-      printf("%d-Savol: \n", u);
-      u++;
-      int len = strlen(ch);
-      for (i = 0; i < len; i++) {
-        if (ch[i] == '\\') {
-          i++;
-          if (ch[i] == 'n') {
-            printf("\n");
-            continue;
-          }
-        }
-        printf("%c", ch[i]);
-      }
-      printf("Javob: ");
-      scanf("%s", & javob[h]);
-      if (h == 0) {
-        Modul_B();
-      } else if (h == 1) {
-        Modul_D();
-      } else if (h == 2) {
-        Modul_B();
-      } else if (h == 3) {
-        Modul_A();
-      } else if (h == 4) {
-        Modul_C();
-      }
-      h++;
-    }
-    fclose(fp);
-  } else if (til == 2) {
-    fp = fopen("Fizika_ru.txt", "r");
-    char ch[350];
-    while (fgets(ch, 350, fp) != NULL) {
-      printf("%d-Вопрос: \n", u);
-      u++;
-      int len = strlen(ch);
-      for (i = 0; i < len; i++) {
-        if (ch[i] == '\\') {
-          i++;
-          if (ch[i] == 'n') {
-            printf("\n");
-            continue;
-          }
-        }
-        printf("%c", ch[i]);
-      }
-      printf("Ответ: ");
-      scanf("%s", & javob[h]);
-      if (h == 0) {
-        Modul_B();
-      } else if (h == 1) {
-        Modul_D();
-      } else if (h == 2) {
-        Modul_B();
-      } else if (h == 3) {
-        Modul_A();
-      } else if (h == 4) {
-        Modul_C();
-      }
-      h++;
-    }
-    fclose(fp);
-  } else if (til == 3) {
-    fp = fopen("Fizika_eng.txt", "r");
-    char ch[350];
-    while (fgets(ch, 350, fp) != NULL) {
-      printf("%d-Question: \n", u);
-      u++;
-      int len = strlen(ch);
-      for (i = 0; i < len; i++) {
-        if (ch[i] == '\\') {
-          i++;
-          if (ch[i] == 'n') {
-            printf("\n");
-            continue;
-          }
-        }
-        printf("%c", ch[i]);
-      }
-      printf("Answer: ");
-      scanf("%s", & javob[h]);
-      if (h == 0) {
-        Modul_B();
-      } else if (h == 1) {
-        Modul_D();
-      } else if (h == 2) {
-        Modul_B();
-      } else if (h == 3) {
-        Modul_A();
-      } else if (h == 4) {
-        Modul_C();
-      }
-      h++;
-    }
-    fclose(fp);
-  } else {
-    return 0;
-  }
-  return 0;
+
+void display_welcome(void)
+{
+  printf("%s\n", welcome_messages[user.language - 1]);
 }
-int Matematika_uz_ru() {
-  FILE * fp;
-  if (til == 1) {
-    fp = fopen("Matematika_uz.txt", "r");
-    char ch[256];
-    while (fgets(ch, 256, fp) != NULL) {
-      printf("%d-Savol: \n", u);
-      u++;
-      int len = strlen(ch);
-      for (i = 0; i < len; i++) {
-        if (ch[i] == '\\') {
-          i++;
-          if (ch[i] == 'n') {
-            printf("\n");
-            continue;
-          }
-        }
-        printf("%c", ch[i]);
-      }
-      printf("Javob: ");
-      scanf("%s", & javob[h]);
-      if (h == 0) {
-        Modul_A();
-      } else if (h == 1) {
-        Modul_B();
-      } else if (h == 2) {
-        Modul_D();
-      } else if (h == 3) {
-        Modul_A();
-      } else if (h == 4) {
-        Modul_D();
-      }
-      h++;
-    }
-    fclose(fp);
-  } else if (til == 2) {
-    fp = fopen("Matematika_ru.txt", "r");
-    char ch[350];
-    while (fgets(ch, 350, fp) != NULL) {
-      printf("%d-Вопрос: \n", u);
-      u++;
-      int len = strlen(ch);
-      for (i = 0; i < len; i++) {
-        if (ch[i] == '\\') {
-          i++;
-          if (ch[i] == 'n') {
-            printf("\n");
-            continue;
-          }
-        }
-        printf("%c", ch[i]);
-      }
-      printf("Ответ: ");
-      scanf("%s", & javob[h]);
-      if (h == 0) {
-        Modul_A();
-      } else if (h == 1) {
-        Modul_B();
-      } else if (h == 2) {
-        Modul_D();
-      } else if (h == 3) {
-        Modul_A();
-      } else if (h == 4) {
-        Modul_D();
-      }
-      h++;
-    }
-    fclose(fp);
-  } else if (til == 3) {
-    fp = fopen("Matematika_eng.txt", "r");
-    char ch[350];
-    while (fgets(ch, 350, fp) != NULL) {
-      printf("%d-Question: \n", u);
-      u++;
-      int len = strlen(ch);
-      for (i = 0; i < len; i++) {
-        if (ch[i] == '\\') {
-          i++;
-          if (ch[i] == 'n') {
-            printf("\n");
-            continue;
-          }
-        }
-        printf("%c", ch[i]);
-      }
-      printf("Answer: ");
-      scanf("%s", & javob[h]);
-      if (h == 0) {
-        Modul_A();
-      } else if (h == 1) {
-        Modul_B();
-      } else if (h == 2) {
-        Modul_D();
-      } else if (h == 3) {
-        Modul_A();
-      } else if (h == 4) {
-        Modul_D();
-      }
-      h++;
-    }
-    fclose(fp);
-  } else {
-    return 0;
-  }
+
+void get_user_info(void)
+{
+  printf("%s", input_prompts[user.language - 1][0]);
+  scanf("%s", user.name);
+  printf("%s", input_prompts[user.language - 1][1]);
+  scanf("%s", user.surname);
+  printf("\n\n");
+}
+
+int display_menu(void)
+{
+  int choice;
+  printf("%s", menu_messages[user.language - 1]);
+  scanf("%d", &choice);
+  return choice;
+}
+
+void display_subject_header(int subject)
+{
+  printf("\n\n\t\t\t%s\n", subject_headers[user.language - 1][subject - 1]);
+  printf("-----------------------------------------------------------\n");
+}
+
+int run_quiz(int subject)
+{
+  const char *filename = file_names[user.language - 1][subject - 1];
+  user.score = 0;
+
+  process_question_file(filename, subject - 1);
   return 0;
 }
 
-int main(void) {
-  qaytdi: printf("O'zbek tili uchun 1 ni bosing\nНажмите 2 для русского языка\nPress 3 for English\n==>> ");
-  scanf("%d", & til);
-  if (til == 1) {
-    printf("%s\n", sh[0][0]);
-  } else if (til == 2) {
-    printf("%s\n", sh[1][0]);
-  } else if (til == 3) {
-    printf("%s\n", sh[2][0]);
+void process_question_file(const char *filename, int subject)
+{
+  FILE *fp = fopen(filename, "r");
+  if (!fp)
+  {
+    printf("Error opening file: %s\n", filename);
+    return;
   }
-  if (til == 1 || til == 2 || til == 3) {
-    name();
-  }
-  if (til == 1) {
-    printf("%s", tx[0][0]);
-    scanf("%d", & tanladim);
-  } else if (til == 2) {
-    printf("%s", tx[1][0]);
-    scanf("%d", & tanladim);
-  } else if (til == 3) {
-    printf("%s", tx[2][0]);
-    scanf("%d", & tanladim);
-  }
-  if (tanladim == 1) {
-    if (til == 1) {
-      printf("\n\n                  %s", ara_uz_ru[2]);
-    } else if (til == 2) {
-      printf("\n\n                 %s\n", ara_uz_ru[3]);
-    } else if (til == 3) {
-      printf("\n\n                   %s\n", ara_uz_ru[6]);
+
+  char line[400];
+  int question_num = 1;
+  int question_index = 0;
+
+  while (fgets(line, sizeof(line), fp) != NULL && question_index < 5)
+  {
+    printf("\n%d-%s:\n", question_num, question_labels[user.language - 1]);
+    printf("-----------------------------------------------------------\n");
+    question_num++;
+
+    int len = strlen(line);
+    for (int i = 0; i < len; i++)
+    {
+      if (line[i] == '\\' && i + 1 < len && line[i + 1] == 'n')
+      {
+        printf("\n");
+        i++;
+      }
+      else
+      {
+        printf("%c", line[i]);
+      }
     }
-    printf("%s", chiziq);
-    Fizika_uz_ru();
-  } else if (tanladim == 2) {
-    if (til == 1) {
-      printf("\n\n                  %s", ara_uz_ru[4]);
-    } else if (til == 2) {
-      printf("\n\n                  %s", ara_uz_ru[5]);
-    } else if (til == 3) {
-      printf("\n\n                  %s", ara_uz_ru[7]);
-    }
-    printf("%s", chiziq);
-    Matematika_uz_ru();
-  } else if (tanladim == 3) {
-    if (til == 1) {
-      printf("\n\n                  %s", ara_uz_ru[0]);
-    } else if (til == 2) {
-      printf("\n\n                  %s\n", ara_uz_ru[1]);
-    } else if (til == 3) {
-      printf("\n\n                  %s\n", ara_uz_ru[8]);
-    }
-    printf("%s", chiziq);
-    Aralash_uz_ru();
-  } else if (tanladim == 4) {
-    printf("\n\n");
-    goto qaytdi;
-  } else {
-    return 0;
+
+    char user_answer;
+    printf("\n%s", input_prompts[user.language - 1][2]);
+    scanf(" %c", &user_answer);
+
+    check_answer(user_answer, correct_answer_keys[subject][question_index]);
+
+    question_index++;
   }
-  if (til == 1) {
-    printf("%s %s siz %d ball yig'diz\n", ism, familya, ball);
-  } else if (til == 2) {
-    printf("%s %s вы набрали %d очков\n", ism, familya, ball);
-  } else if (til == 3) {
-    printf("%s %s you scored %d points\n", ism, familya, ball);
+
+  fclose(fp);
+}
+
+void check_answer(char user_answer, char correct_answer)
+{
+  if (user_answer >= 'a' && user_answer <= 'z')
+  {
+    user_answer = user_answer - 'a' + 'A';
   }
-  return 0;
+
+  if (user_answer == correct_answer)
+  {
+    printf("%s\n\n", correct_answers[user.language - 1]);
+    user.score += 20;
+  }
+  else
+  {
+    printf("%s\n\n", wrong_answers[user.language - 1]);
+  }
+}
+
+void display_final_score(void)
+{
+  printf(score_messages[user.language - 1], user.name, user.surname, user.score);
 }
